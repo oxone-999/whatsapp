@@ -1,28 +1,51 @@
-import MessageModal from '../Model/MessageModel.js'
+import MessageModal from "../Model/MessageModel.js";
 
+export const addMessage = async (req, res) => {
+  const { chatId, senderId, text } = req.body;
 
-export const addMessage=async(req,res)=>{
-    const {chatId,senderId,text}=req.body;
-    const message=new MessageModal({
-        chatId,senderId,text
+  try {
+    // Find the chat with the provided chatId
+    const chat = await MessageModal.findOne({
+      chatId: chatId,
+      senderId: senderId,
     });
+    if (!chat) {
+      const newMessage = new MessageModal({
+        chatId,
+        senderId,
+        text: [{ content: text }],
+      });
 
-    try {
-        const result=await message.save();
-        res.status(200).json(result);
-        
-    } catch (error) {
-        res.status(500).json({message:error.message});
+      const message = await newMessage.save();
+      return res.status(200).json(message);
     }
-}
 
-export const getMessages=async(req,res)=>{
-    const {chatId}=req.params;
-    try {
-        const result=await MessageModal.find({chatId});
-        res.status(200).json(result);
-    } catch (error) {
-        res.status(500).json({message:error.message});
+    // Create a new message object
+    const newMessage = {
+      content: text,
+      timestamp: new Date(),
+    };
 
-    }
-}
+    chat.text.push(newMessage);
+
+    await chat.save();
+
+    res.status(200).json(newMessage);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const getMessages = async (req, res) => {
+  try {
+    const { chatId, senderId } = req.params;
+    console.log(chatId, senderId);
+    const result = await MessageModal.findOne({
+      chatId: chatId,
+      senderId: senderId,
+    });
+    res.status(200).json({result});
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

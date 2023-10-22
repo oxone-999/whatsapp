@@ -25,7 +25,7 @@ export const getUser = async(req, res) => {
             const { password, ...otherdetails } = user._doc;
             res.status(200).json(otherdetails);
         } else {
-            res.status(404).json("User is not exist");
+            res.status(404).json("User does not exist");
         }
     } catch (error) {
         res.status(500).json({ message: error.message });

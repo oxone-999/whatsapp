@@ -1,0 +1,335 @@
+.main {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  background-color: #ccc;
+  width: 100vw;
+  height: 100vh;
+}
+
+.left {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 25%;
+  height: 100%;
+  flex-grow: 1;
+}
+
+.right {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 75%;
+  height: 100%;
+  flex-grow: 8;
+}
+
+.profile {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  height: 10%;
+  background-color: #beffd7;
+}
+
+.profile img {
+  width: 80px;
+  border-radius: 50%;
+  background-color: #3d3d3d;
+  mix-blend-mode: multiply;
+}
+
+.profile h3 {
+  margin: 0;
+  padding: 1rem;
+  text-align: center;
+  font-size: 1.5rem;
+  color: #3d3d3d;
+}
+
+.chats {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: #9fc3b7;
+  width: 100%;
+  height: 100%;
+  padding-top: 0.5rem;
+}
+
+.chat {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 90%;
+  height: 10%;
+  margin: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 1rem;
+  background-color: #60eabc;
+  margin: 0.5rem 0.5rem;
+}
+
+.chatImg img {
+  width: 80px;
+  border-radius: 50%;
+  background-color: #3d3d3d;
+  mix-blend-mode: multiply;
+}
+
+.chatInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  width: 70%;
+  height: 100%;
+  color: #3d3d3d;
+}
+
+.top {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 10%;
+  background-color: #5c5c5c;
+}
+
+.mainChat {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #656565;
+  width: 100%;
+  height: 100%;
+}
+
+.sendText{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 1rem;
+  margin: 0.5rem 0.5rem;
+}
+
+.sendText input {
+  width: 100%;
+  height: 4rem;
+  border-radius: 0.5rem;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  background-color: #aeaeae;
+  color: #464646;
+  padding-left: 1rem;
+}
+
+.send button {
+  width: 100%;
+  height: 100%;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  color: #3d3d3d;
+  background-color: #ffffff;
+}
+
+.send img {
+  width: 2rem;
+  height: 2rem;
+  background-color: #3d3d3d;
+  mix-blend-mode: multiply;
+}
+
+.chatHeader {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  height: 8%;
+  background-color: #4a6454;
+}
+
+.chatHeader img {
+  margin: 1rem;
+  width: 3rem;
+  height: 3rem;
+  background-color: #3d3d3d;
+  mix-blend-mode: multiply;
+}
+
+.chatHeader{
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.chatArea {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  height: 86%;
+  background-color: #ccc;
+}
+
+.placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  font-weight: 800;
+  color: #3d3d3d;
+}
+
+.friendChat {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  font-weight: 800;
+  color: #3d3d3d;
+}
+
+.activeChat{
+    background-color: #59e2ef;
+}
+
+.messageContainer{
+  width: 95%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.message{
+  display: flex;
+  flex-direction: row;
+  background-color: #2fbe85;
+  border-radius: 1rem;
+  margin-bottom: 0.5rem;
+  padding: 1rem;
+}
+
+.rightMessage{
+  align-self: flex-end;
+}
+
+.leftMessage{
+  align-self: flex-start;
+}
+
+/* Button.module.css */
+.addGroup {
+  display: flex;
+  justify-content: center;
+  justify-self: flex-end;
+  align-items: center;
+  transition: all 0.2s ease-in-out;
+  background-color: #45dea1;
+}
+
+.addGroup:hover {
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  transform: scale(1.05);
+}
+
+.addGroup h3{
+  margin: 0;
+  padding: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #3d3d3d;
+}
+
+/* AddGroupPopup.module.css */
+.addPopup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  width: 500px;
+  height: 400px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.addPopup h3 {
+  font-size: 1.5rem;
+  margin: 0;
+  color: #333;
+}
+
+.addPopup button {
+  background-color: #45dea1;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.addPopup button:hover {
+  background-color: #3fbf95;
+}
+
+.addPopup input{
+  width: 90%;
+  height: 3rem;
+  border-radius: 0.5rem;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  background-color: #aeaeae;
+  color: #464646;
+  padding-left: 1rem;
+}
+
+.addPopup h3{
+  color: #333;
+}
+
+.groupOptions{
+  display: flex;
+  width: 4rem;
+  height: 2rem;
+  border-radius: 1rem;
+}
+
+.selectGroup{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 4rem;
+  overflow-y:visible;
+  color: #333;
+}

@@ -7,7 +7,7 @@ import Loading from "../../lottie/loading.json";
 const apiUrl = import.meta.env.VITE_API_URL;
 
 export default function Login() {
-  const [email, setEmail] = useState(null);
+  const [username, setUsername] = useState(null);
   const [password, setPassword] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -16,10 +16,11 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const response = await fetch(`${apiUrl}/auth/login`, {
+      const response = await fetch(`http://localhost:5000/api/auth/login`, {
+      // const response = await fetch(`${apiUrl}/auth/login`, {
         method: "POST",
         body: JSON.stringify({
-          email: email,
+          username: username,
           password: password,
         }),
         headers: {
@@ -28,20 +29,17 @@ export default function Login() {
       });
       const json = await response.json();
 
-      if (json.status === "ok") {
-        localStorage.setItem("token", json.data);
+      if (response.status === 200) {
+        localStorage.setItem("token", json.token);
+        console.log(json.token);
         setLoading(false);
 
-        if (json.admin) {
-          localStorage.setItem("admin", json.admin);
-          console.log(json.admin);
-        }
-        window.location = "/projects";
+        window.location = "/";
       } else {
         toast.error(json.error);
         setLoading(false);
       }
-      console.log("Success:", JSON.stringify(json));
+      // console.log("Success:", JSON.stringify(json));
     } catch (error) {
       console.error("Error:", error);
       if (error) {
@@ -68,8 +66,8 @@ export default function Login() {
                     type="text"
                     name="text"
                     className={Styles.input}
-                    placeholder="username or email"
-                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="username"
+                    onChange={(e) => setUsername(e.target.value)}
                     required
                   />
                 </div>

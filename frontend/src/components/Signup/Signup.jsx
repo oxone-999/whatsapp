@@ -2,16 +2,13 @@ import { useState } from "react";
 import Styles from "../../styles/Signup.module.css";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
-import { AvatarGenerator } from "random-avatar-generator";
 import Lottie from "lottie-react";
 import Loading from "../../lottie/loading.json";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
 export default function Signup() {
-  const generator = new AvatarGenerator();
   const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const history = useNavigate();
@@ -21,13 +18,12 @@ export default function Signup() {
     setLoading(true);
 
     try {
-      const response = await fetch(`${apiUrl}/auth/signup`, {
+      const response = await fetch(`http://localhost:5000/api/auth/register`, {
+        //   const response = await fetch(`${apiUrl}/auth/register`, {
         method: "POST",
         body: JSON.stringify({
-          name: fullName,
-          email: email,
+          username: fullName,
           password: password,
-          avatar: generator.generateRandomAvatar(),
         }),
         headers: {
           "Content-Type": "application/json",
@@ -68,16 +64,6 @@ export default function Signup() {
                     className={Styles.input}
                     placeholder="username"
                     onChange={(e) => setFullName(e.target.value)}
-                    required
-                  />
-                </div>
-                <div className={Styles.container}>
-                  <input
-                    type="email"
-                    name="text"
-                    className={Styles.input}
-                    placeholder="email"
-                    onChange={(e) => setEmail(e.target.value)}
                     required
                   />
                 </div>
