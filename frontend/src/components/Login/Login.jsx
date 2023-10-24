@@ -16,8 +16,7 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const response = await fetch(`http://localhost:5000/api/auth/login`, {
-      // const response = await fetch(`${apiUrl}/auth/login`, {
+      const response = await fetch(`${apiUrl}/api/auth/login`, {
         method: "POST",
         body: JSON.stringify({
           username: username,

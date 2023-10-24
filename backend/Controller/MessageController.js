@@ -39,7 +39,7 @@ export const addMessage = async (req, res) => {
 export const getMessages = async (req, res) => {
   try {
     const { chatId, senderId } = req.params;
-    console.log(chatId, senderId);
+    // console.log(chatId, senderId);
     const result = await MessageModal.findOne({
       chatId: chatId,
       senderId: senderId,

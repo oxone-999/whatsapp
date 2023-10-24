@@ -5,6 +5,7 @@
   background-color: #ccc;
   width: 100vw;
   height: 100vh;
+  overflow: hidden;
 }
 
 .left {
@@ -60,6 +61,7 @@
   width: 100%;
   height: 100%;
   padding-top: 0.5rem;
+  overflow: auto;
 }
 
 .chat {
@@ -220,6 +222,7 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+  overflow-y: auto;
 }
 
 .message{
@@ -229,6 +232,25 @@
   border-radius: 1rem;
   margin-bottom: 0.5rem;
   padding: 1rem;
+}
+
+.message p{
+  margin: 0;
+  padding: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #3d3d3d;
+  margin: 0.1rem;
+  padding: 0.3rem;
+}
+
+.timestamp{
+  display:flex;
+  justify-content: flex-end;
+  margin: 0;
+  padding: 0;
+  font-size: 0.8rem;
+  color: #3d3d3d;
 }
 
 .rightMessage{

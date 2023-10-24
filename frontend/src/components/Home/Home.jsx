@@ -2,8 +2,14 @@ import React from "react";
 import Styles from "../../styles/Home.module.css";
 import { decodeToken } from "react-jwt";
 import { MultiSelect } from "react-multi-select-component";
+import { io } from "socket.io-client";
+
+const apiUrl = import.meta.env.VITE_API_URL;
+const socketUrl = import.meta.env.VITE_SOCKET_URL;
 
 function Home() {
+  const socket = io.connect(socketUrl);
+
   const token = localStorage.getItem("token");
   const [author, setAuthor] = React.useState("ChatUser");
   const [users, setUsers] = React.useState([1, 2, 3, 4, 5]);
@@ -29,7 +35,7 @@ function Home() {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/message", {
+      const response = await fetch(`${apiUrl}/api/message`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -47,6 +53,12 @@ function Home() {
           content: message,
           timestamp: new Date().toJSON(), // Use the current timestamp
         };
+
+        socket.emit("chat", {
+          senderId: senderId,
+          activeChatId: activeChatId,
+          message: message,
+        });
 
         // Update the messages state with the new message
         setMessages([...messages, newMessage]);
@@ -68,7 +80,7 @@ function Home() {
 
     try {
       const responseSenders = await fetch(
-        `http://localhost:5000/api/message/${activeChatId}/${senderId}`,
+        `${apiUrl}/api/message/${activeChatId}/${senderId}`,
         {
           method: "GET",
           headers: {
@@ -78,7 +90,7 @@ function Home() {
       );
 
       const responseReceivers = await fetch(
-        `http://localhost:5000/api/message/${senderId}/${activeChatId}`,
+        `${apiUrl}/api/message/${senderId}/${activeChatId}`,
         {
           method: "GET",
           headers: {
@@ -133,6 +145,19 @@ function Home() {
     }
   };
 
+  React.useEffect(() => {
+    socket.on("chat", (user) => {
+      if (user.senderId === senderId) {
+        const newMessage = {
+          id: user.activeChatId, // Assuming the sender is you
+          content: user.message,
+          timestamp: new Date().toJSON(), // Use the current timestamp
+        };
+        setMessages([...messages, newMessage]);
+      }
+    });
+  });
+
   // Fetch messages when the active chat changes
   React.useEffect(() => {
     fetchMessages();
@@ -152,7 +177,7 @@ function Home() {
   React.useEffect(() => {
     const users = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/users`, {
+        const response = await fetch(`${apiUrl}/api/users`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -166,7 +191,7 @@ function Home() {
           label: user.username,
           value: user._id.toString(),
         }));
-        console.log("options",options);
+        console.log("options", options);
         setOptions(options);
       } catch (error) {
         console.log(error);
