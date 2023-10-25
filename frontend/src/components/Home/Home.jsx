@@ -9,7 +9,6 @@ const socketUrl = import.meta.env.VITE_SOCKET_URL;
 
 function Home() {
   const socket = io.connect(socketUrl);
-
   const token = localStorage.getItem("token");
   const [author, setAuthor] = React.useState("ChatUser");
   const [users, setUsers] = React.useState([1, 2, 3, 4, 5]);
@@ -20,6 +19,7 @@ function Home() {
   const [senderId, setSenderId] = React.useState("");
   const [isAddGroupPopupOpen, setIsAddGroupPopupOpen] = React.useState(false);
   const [options, setOptions] = React.useState([]);
+  const [typing, setTyping] = React.useState(false);
 
   const openAddGroupPopup = () => {
     setIsAddGroupPopupOpen(true);
@@ -27,6 +27,36 @@ function Home() {
 
   const closeAddGroupPopup = () => {
     setIsAddGroupPopupOpen(false);
+  };
+
+  const handleInputChange = async (e) => {
+    setMessage(e.target.value);
+  };
+
+  const handleTyping = async () => {
+    console.log("typing");
+    socket.emit("typing", {
+      senderId: senderId,
+      activeChatId: activeChatId,
+      typing: true,
+    });
+
+    setTimeout(() => {
+      socket.emit(
+        "typing",
+        {
+          senderId: senderId,
+          activeChatId: activeChatId,
+          typing: false,
+        },
+        (error) => {
+          if (error) {
+            console.log(error);
+          }
+        }
+      );
+      console.log("not typing");
+    }, 1300);
   };
 
   const handleSendMessage = async () => {
@@ -75,8 +105,6 @@ function Home() {
     if (!activeChatId) {
       return;
     }
-
-    console.log("IDs", activeChatId, senderId);
 
     try {
       const responseSenders = await fetch(
@@ -154,6 +182,14 @@ function Home() {
           timestamp: new Date().toJSON(), // Use the current timestamp
         };
         setMessages([...messages, newMessage]);
+      }
+    });
+  });
+
+  React.useEffect(() => {
+    socket.on("typing", (user) => {
+      if (user.senderId === senderId) {
+        setTyping(user.typing);
       }
     });
   });
@@ -282,7 +318,12 @@ function Home() {
               src="https://img.freepik.com/premium-vector/anonymous-user-circle-icon-vector-illustration-flat-style-with-long-shadow_520826-1931.jpg"
               alt="user"
             />
-            <div>{activeChatUser}</div>
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <div>{activeChatUser}</div>
+              {typing == true && activeChatUser && (
+                <div className={Styles.typing}>typing...</div>
+              )}
+            </div>
           </div>
           <div className={Styles.chatArea}>
             {activeChatUser ? (
@@ -297,9 +338,16 @@ function Home() {
                     }`}
                   >
                     <p>{msg.content}</p>
-                    <span className={Styles.timestamp}>
-                      {new Date(msg.timestamp).toLocaleTimeString()}
-                    </span>
+                    <div className={Styles.timestampDiv}>
+                      <span className={Styles.timestamp}>
+                        {new Date(msg.timestamp)
+                          .toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })
+                          .toLowerCase()}
+                      </span>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -315,11 +363,12 @@ function Home() {
                 type="text"
                 placeholder="Type a message..."
                 value={message}
-                onChange={(e) => setMessage(e.target.value)}
+                onChange={handleInputChange}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     handleSendMessage();
                   }
+                  handleTyping();
                 }}
               />
             </div>

@@ -72,14 +72,14 @@
   width: 90%;
   height: 10%;
   margin: 0.5rem;
-  padding: 0.5rem;
   border-radius: 1rem;
   background-color: #60eabc;
-  margin: 0.5rem 0.5rem;
 }
 
 .chatImg img {
-  width: 80px;
+  display: flex;
+  align-items: center;
+  width: 50px;
   border-radius: 50%;
   background-color: #3d3d3d;
   mix-blend-mode: multiply;
@@ -93,6 +93,10 @@
   width: 70%;
   height: 100%;
   color: #3d3d3d;
+}
+
+.chatInfo p{
+  font-size: 0.9rem;
 }
 
 .top {
@@ -115,7 +119,7 @@
   height: 100%;
 }
 
-.sendText{
+.sendText {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -164,7 +168,8 @@
   align-items: center;
   width: 100%;
   height: 8%;
-  background-color: #4a6454;
+  background-color: #6e6e6e;
+  color: #fcfcfc;
 }
 
 .chatHeader img {
@@ -175,12 +180,19 @@
   mix-blend-mode: multiply;
 }
 
-.chatHeader{
-    font-size: 1.5rem;
-    font-weight: 600;
+.chatHeader {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.typing{
+  font-size: 0.8rem;
+  font-weight: 200;
 }
 
 .chatArea {
+  background-image: url("images/whatsapp.jpg");
+  background-repeat: repeat;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -198,7 +210,7 @@
   align-items: center;
   font-size: 2rem;
   font-weight: 800;
-  color: #3d3d3d;
+  color: #efefef;
 }
 
 .friendChat {
@@ -212,11 +224,11 @@
   color: #3d3d3d;
 }
 
-.activeChat{
-    background-color: #59e2ef;
+.activeChat {
+  background-color: #59e2ef;
 }
 
-.messageContainer{
+.messageContainer {
   width: 95%;
   height: 100%;
   display: flex;
@@ -225,40 +237,48 @@
   overflow-y: auto;
 }
 
-.message{
+.message {
   display: flex;
   flex-direction: row;
-  background-color: #2fbe85;
-  border-radius: 1rem;
+  background-color: var(--chatGreen);
+  border-radius: 0.4rem;
   margin-bottom: 0.5rem;
-  padding: 1rem;
+  padding: 0.2rem;
+  color: #f4f4f4;
 }
 
-.message p{
+.message p {
   margin: 0;
   padding: 0;
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: #3d3d3d;
+  font-size: 1rem;
+  font-weight: 400;
   margin: 0.1rem;
+  padding: 0.2rem;
+}
+
+.message span{
+  color: #fcfcfc;
+}
+
+.timestampDiv {
+  display: flex;
+  align-items: flex-end;
+}
+
+.timestamp {
+  margin: 0;
+  padding: 0;
+  font-size: 0.6rem;
   padding: 0.3rem;
 }
 
-.timestamp{
-  display:flex;
-  justify-content: flex-end;
-  margin: 0;
-  padding: 0;
-  font-size: 0.8rem;
-  color: #3d3d3d;
-}
-
-.rightMessage{
+.rightMessage {
   align-self: flex-end;
 }
 
-.leftMessage{
+.leftMessage {
   align-self: flex-start;
+  background-color: var(--chatGray);
 }
 
 /* Button.module.css */
@@ -277,7 +297,7 @@
   transform: scale(1.05);
 }
 
-.addGroup h3{
+.addGroup h3 {
   margin: 0;
   padding: 0;
   font-size: 1.5rem;
@@ -324,7 +344,7 @@
   background-color: #3fbf95;
 }
 
-.addPopup input{
+.addPopup input {
   width: 90%;
   height: 3rem;
   border-radius: 0.5rem;
@@ -336,22 +356,22 @@
   padding-left: 1rem;
 }
 
-.addPopup h3{
+.addPopup h3 {
   color: #333;
 }
 
-.groupOptions{
+.groupOptions {
   display: flex;
   width: 4rem;
   height: 2rem;
   border-radius: 1rem;
 }
 
-.selectGroup{
+.selectGroup {
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 4rem;
-  overflow-y:visible;
+  overflow-y: visible;
   color: #333;
 }

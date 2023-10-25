@@ -1,4 +1,8 @@
-const io = require("socket.io")(8800, {
+require("dotenv").config();
+
+const port = process.env.PORT;
+
+const io = require("socket.io")(port, {
   cors: {
     origin: [
       "http://localhost:5173",
@@ -10,7 +14,7 @@ const io = require("socket.io")(8800, {
 let activeUsers = [];
 
 io.on("connection", (socket) => {
-  console.log(socket.id);
+  // console.log(`socket connected at port ${port}`);
   socket.on("chat", (user) => {
     const { senderId, activeChatId, message } = user;
     const NewUser = {
@@ -19,5 +23,16 @@ io.on("connection", (socket) => {
       message: message,
     };
     io.emit("chat", NewUser);
+  });
+
+  socket.on("typing", (user) => {
+    const { senderId, activeChatId, typing} = user;
+    const NewUser = {
+      senderId: activeChatId,
+      activeChatId: senderId,
+      typing : typing,
+    };
+    console.log(typing);
+    io.emit("typing", NewUser);
   });
 });
