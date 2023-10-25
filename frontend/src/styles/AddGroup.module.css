@@ -1,0 +1,70 @@
+/* AddGroupPopup.module.css */
+.addPopup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  width: 500px;
+  height: 400px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.addPopup h3 {
+  font-size: 1.5rem;
+  margin: 0;
+  color: #333;
+}
+
+.addPopup button {
+  background-color: #45dea1;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.addPopup button:hover {
+  background-color: #3fbf95;
+}
+
+.addPopup input {
+  width: 90%;
+  height: 3rem;
+  border-radius: 0.5rem;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  background-color: #aeaeae;
+  color: #464646;
+  padding-left: 1rem;
+}
+
+.addPopup h3 {
+  color: #333;
+}
+
+.groupOptions {
+  display: flex;
+  width: 4rem;
+  height: 2rem;
+  border-radius: 1rem;
+}
+
+.selectGroup {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 4rem;
+  overflow-y: visible;
+  color: #333;
+}

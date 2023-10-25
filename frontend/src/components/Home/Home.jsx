@@ -1,10 +1,11 @@
 import React from "react";
 import Styles from "../../styles/Home.module.css";
 import { decodeToken } from "react-jwt";
-import { MultiSelect } from "react-multi-select-component";
 import { io } from "socket.io-client";
 import Lottie from "lottie-react";
 import Loading from "../../lottie/loading.json";
+import AddGroup from "../AddGroup/AddGroup";
+import { fetchUsers, fetchSenders, fetchRecievers } from "../../api/api_calls";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 const socketUrl = import.meta.env.VITE_SOCKET_URL;
@@ -110,25 +111,9 @@ function Home() {
     }
 
     try {
-      const responseSenders = await fetch(
-        `${apiUrl}/api/message/${activeChatId}/${senderId}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const responseSenders = await fetchRecievers(senderId, activeChatId);
 
-      const responseReceivers = await fetch(
-        `${apiUrl}/api/message/${senderId}/${activeChatId}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const responseReceivers = await fetchRecievers(activeChatId, senderId);
 
       if (responseSenders.ok && responseReceivers.ok) {
         const senderMessages = await responseSenders.json();
@@ -180,22 +165,13 @@ function Home() {
     const users = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`${apiUrl}/api/users`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-
-        const json = await response.json();
-        console.log(json);
+        const json = await fetchUsers();
         setUsers(json);
         setLoading(false);
         const options = json.map((user) => ({
           label: user.username,
           value: user._id.toString(),
         }));
-        console.log("options", options);
         setOptions(options);
       } catch (error) {
         console.log(error);
@@ -258,44 +234,17 @@ function Home() {
       ) : (
         <>
           {isAddGroupPopupOpen && (
-            <div className={Styles.addPopup}>
-              <h3>Create a New Group</h3>
-              <input type="text" placeholder="Group Name" />
-              <input type="text" placeholder="Group Description" />
-              <h3>Select Group Members</h3>
-              <pre>{JSON.stringify(selected.label)}</pre>
-              <MultiSelect
-                className={Styles.selectGroup}
-                options={options}
-                value={selected}
-                onChange={setSelected}
-                labelledBy="Select"
-              />
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-evenly",
-                  width: "15rem",
-                }}
-              >
-                <button style={{ color: "black" }}>Create</button>
-                <button
-                  style={{ backgroundColor: "red" }}
-                  onClick={closeAddGroupPopup}
-                >
-                  Close
-                </button>
-              </div>
-            </div>
+            <AddGroup
+              options={options}
+              selected={selected}
+              setSelected={setSelected}
+              closeAddGroupPopup={closeAddGroupPopup}
+            />
           )}
 
           <div className={Styles.left}>
             <div className={Styles.profile}>
-              <img
-                src="https://img.freepik.com/premium-vector/anonymous-user-circle-icon-vector-illustration-flat-style-with-long-shadow_520826-1931.jpg"
-                alt="user"
-              />
-              <h3>{author}</h3>
+              <span>Chats</span>
               <button className={Styles.addGroup} onClick={openAddGroupPopup}>
                 <h3>+</h3>
               </button>
@@ -316,7 +265,7 @@ function Home() {
                   >
                     <div className={Styles.chatImg}>
                       <img
-                        src="https://img.freepik.com/premium-vector/anonymous-user-circle-icon-vector-illustration-flat-style-with-long-shadow_520826-1931.jpg"
+                        src="/images/profile.png"
                         alt="user"
                       />
                     </div>
@@ -345,28 +294,30 @@ function Home() {
               <div className={Styles.chatArea}>
                 {activeChatUser ? (
                   <div className={Styles.messageContainer}>
-                    {messages.map((msg, index) => (
-                      <div
-                        key={index}
-                        className={`${Styles.message} ${
-                          msg.id === senderId
-                            ? Styles.rightMessage
-                            : Styles.leftMessage
-                        }`}
-                      >
-                        <p>{msg.content}</p>
-                        <div className={Styles.timestampDiv}>
-                          <span className={Styles.timestamp}>
-                            {new Date(msg.timestamp)
-                              .toLocaleTimeString([], {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              })
-                              .toLowerCase()}
-                          </span>
+                    <div className={Styles.messagesWrapper}>
+                      {messages.map((msg, index) => (
+                        <div
+                          key={index}
+                          className={`${Styles.message} ${
+                            msg.id === senderId
+                              ? Styles.rightMessage
+                              : Styles.leftMessage
+                          }`}
+                        >
+                          <p>{msg.content}</p>
+                          <div className={Styles.timestampDiv}>
+                            <span className={Styles.timestamp}>
+                              {new Date(msg.timestamp)
+                                .toLocaleTimeString([], {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })
+                                .toLowerCase()}
+                            </span>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
                 ) : (
                   <div className={Styles.placeholder}>
@@ -388,14 +339,6 @@ function Home() {
                       handleTyping();
                     }}
                   />
-                </div>
-                <div className={Styles.send} onClick={handleSendMessage}>
-                  <button>
-                    <img
-                      src="https://www.pngitem.com/pimgs/m/11-118680_icon-png-send-icon-white-transparent-png.png"
-                      alt="menu"
-                    />
-                  </button>
                 </div>
               </div>
             </div>

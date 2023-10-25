@@ -17,8 +17,12 @@
   /* CSS VARIABLES */
 
   --chatGray: #3e3e3e;
-  --chatGreen: #2fbe85;
-  --chatBoxHover: #3fbf95;
+  --chatGreen: #075E54;
+  --chatBoxHover: #3c3c3c;
+  --chatBoxActive: #4f4f4f;
+  --chatBoxClick: rgb(75, 75, 75);
+  --gray: #252525;
+  --white: #eeeeee;
 }
 
 a {
