@@ -76,6 +76,10 @@
   background-color: #60eabc;
 }
 
+.chat:hover{
+  background-color: var(--chatBoxHover);
+}
+
 .chatImg img {
   display: flex;
   align-items: center;
@@ -191,7 +195,7 @@
 }
 
 .chatArea {
-  background-image: url("images/whatsapp.jpg");
+  background-image: url("/images/whatsapp.jpg");
   background-repeat: repeat;
   display: flex;
   flex-direction: column;
@@ -225,7 +229,7 @@
 }
 
 .activeChat {
-  background-color: #59e2ef;
+  background-color: #2cb27a;
 }
 
 .messageContainer {

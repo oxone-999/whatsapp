@@ -289,7 +289,7 @@ function Home() {
             .map((user, index) => (
               <div
                 className={`${Styles.chat} ${
-                  author === user.username ? Styles.activeChat : ""
+                  activeChatId === user._id ? Styles.activeChat : ""
                 }`}
                 key={index}
                 onClick={() => {
