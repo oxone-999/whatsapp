@@ -3,6 +3,8 @@ import Styles from "../../styles/Home.module.css";
 import { decodeToken } from "react-jwt";
 import { MultiSelect } from "react-multi-select-component";
 import { io } from "socket.io-client";
+import Lottie from "lottie-react";
+import Loading from "../../lottie/loading.json";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 const socketUrl = import.meta.env.VITE_SOCKET_URL;
@@ -20,6 +22,7 @@ function Home() {
   const [isAddGroupPopupOpen, setIsAddGroupPopupOpen] = React.useState(false);
   const [options, setOptions] = React.useState([]);
   const [typing, setTyping] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
 
   const openAddGroupPopup = () => {
     setIsAddGroupPopupOpen(true);
@@ -174,6 +177,34 @@ function Home() {
   };
 
   React.useEffect(() => {
+    const users = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`${apiUrl}/api/users`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        const json = await response.json();
+        console.log(json);
+        setUsers(json);
+        setLoading(false);
+        const options = json.map((user) => ({
+          label: user.username,
+          value: user._id.toString(),
+        }));
+        console.log("options", options);
+        setOptions(options);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    users();
+  }, [token]);
+
+  React.useEffect(() => {
     socket.on("chat", (user) => {
       if (user.senderId === senderId) {
         const newMessage = {
@@ -210,179 +241,167 @@ function Home() {
     }
   }, [token]);
 
-  React.useEffect(() => {
-    const users = async () => {
-      try {
-        const response = await fetch(`${apiUrl}/api/users`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-
-        const json = await response.json();
-        console.log(json);
-        setUsers(json);
-        const options = json.map((user) => ({
-          label: user.username,
-          value: user._id.toString(),
-        }));
-        console.log("options", options);
-        setOptions(options);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    users();
-  }, [token]);
-
   const [selected, setSelected] = React.useState([]);
 
   return (
     <div className={Styles.main}>
-      {isAddGroupPopupOpen && (
-        <div className={Styles.addPopup}>
-          <h3>Create a New Group</h3>
-          <input type="text" placeholder="Group Name" />
-          <input type="text" placeholder="Group Description" />
-          <h3>Select Group Members</h3>
-          <pre>{JSON.stringify(selected.label)}</pre>
-          <MultiSelect
-            className={Styles.selectGroup}
-            options={options}
-            value={selected}
-            onChange={setSelected}
-            labelledBy="Select"
-          />
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-evenly",
-              width: "15rem",
-            }}
-          >
-            <button style={{ color: "black" }}>Create</button>
-            <button
-              style={{ backgroundColor: "red" }}
-              onClick={closeAddGroupPopup}
-            >
-              Close
-            </button>
-          </div>
+      {loading ? (
+        <div
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            margin: "auto",
+          }}
+        >
+          <Lottie animationData={Loading} loop={true} />
         </div>
-      )}
-
-      <div className={Styles.left}>
-        <div className={Styles.profile}>
-          <img
-            src="https://img.freepik.com/premium-vector/anonymous-user-circle-icon-vector-illustration-flat-style-with-long-shadow_520826-1931.jpg"
-            alt="user"
-          />
-          <h3>{author}</h3>
-          <button className={Styles.addGroup} onClick={openAddGroupPopup}>
-            <h3>+</h3>
-          </button>
-        </div>
-        <div className={Styles.chats}>
-          {users
-            .filter((user) => user.username !== author)
-            .map((user, index) => (
+      ) : (
+        <>
+          {isAddGroupPopupOpen && (
+            <div className={Styles.addPopup}>
+              <h3>Create a New Group</h3>
+              <input type="text" placeholder="Group Name" />
+              <input type="text" placeholder="Group Description" />
+              <h3>Select Group Members</h3>
+              <pre>{JSON.stringify(selected.label)}</pre>
+              <MultiSelect
+                className={Styles.selectGroup}
+                options={options}
+                value={selected}
+                onChange={setSelected}
+                labelledBy="Select"
+              />
               <div
-                className={`${Styles.chat} ${
-                  activeChatId === user._id ? Styles.activeChat : ""
-                }`}
-                key={index}
-                onClick={() => {
-                  setActiveChatUser(user.username);
-                  setActiveChatId(user._id);
+                style={{
+                  display: "flex",
+                  justifyContent: "space-evenly",
+                  width: "15rem",
                 }}
               >
-                <div className={Styles.chatImg}>
-                  <img
-                    src="https://img.freepik.com/premium-vector/anonymous-user-circle-icon-vector-illustration-flat-style-with-long-shadow_520826-1931.jpg"
-                    alt="user"
-                  />
-                </div>
-                <div className={Styles.chatInfo}>
-                  <h3>{user.username}</h3>
-                  <p>Message</p>
-                </div>
+                <button style={{ color: "black" }}>Create</button>
+                <button
+                  style={{ backgroundColor: "red" }}
+                  onClick={closeAddGroupPopup}
+                >
+                  Close
+                </button>
               </div>
-            ))}
-        </div>
-      </div>
-      <div className={Styles.right}>
-        <div className={Styles.mainChat}>
-          <div className={Styles.chatHeader}>
-            <img
-              src="https://img.freepik.com/premium-vector/anonymous-user-circle-icon-vector-illustration-flat-style-with-long-shadow_520826-1931.jpg"
-              alt="user"
-            />
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              <div>{activeChatUser}</div>
-              {typing == true && activeChatUser && (
-                <div className={Styles.typing}>typing...</div>
-              )}
             </div>
-          </div>
-          <div className={Styles.chatArea}>
-            {activeChatUser ? (
-              <div className={Styles.messageContainer}>
-                {messages.map((msg, index) => (
+          )}
+
+          <div className={Styles.left}>
+            <div className={Styles.profile}>
+              <img
+                src="https://img.freepik.com/premium-vector/anonymous-user-circle-icon-vector-illustration-flat-style-with-long-shadow_520826-1931.jpg"
+                alt="user"
+              />
+              <h3>{author}</h3>
+              <button className={Styles.addGroup} onClick={openAddGroupPopup}>
+                <h3>+</h3>
+              </button>
+            </div>
+            <div className={Styles.chats}>
+              {users
+                .filter((user) => user.username !== author)
+                .map((user, index) => (
                   <div
-                    key={index}
-                    className={`${Styles.message} ${
-                      msg.id === senderId
-                        ? Styles.rightMessage
-                        : Styles.leftMessage
+                    className={`${Styles.chat} ${
+                      activeChatId === user._id ? Styles.activeChat : ""
                     }`}
+                    key={index}
+                    onClick={() => {
+                      setActiveChatUser(user.username);
+                      setActiveChatId(user._id);
+                    }}
                   >
-                    <p>{msg.content}</p>
-                    <div className={Styles.timestampDiv}>
-                      <span className={Styles.timestamp}>
-                        {new Date(msg.timestamp)
-                          .toLocaleTimeString([], {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })
-                          .toLowerCase()}
-                      </span>
+                    <div className={Styles.chatImg}>
+                      <img
+                        src="https://img.freepik.com/premium-vector/anonymous-user-circle-icon-vector-illustration-flat-style-with-long-shadow_520826-1931.jpg"
+                        alt="user"
+                      />
+                    </div>
+                    <div className={Styles.chatInfo}>
+                      <h3>{user.username}</h3>
+                      <p>Message</p>
                     </div>
                   </div>
                 ))}
-              </div>
-            ) : (
-              <div className={Styles.placeholder}>
-                Select a chat to start messaging
-              </div>
-            )}
-          </div>
-          <div className={Styles.top}>
-            <div className={Styles.sendText}>
-              <input
-                type="text"
-                placeholder="Type a message..."
-                value={message}
-                onChange={handleInputChange}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    handleSendMessage();
-                  }
-                  handleTyping();
-                }}
-              />
             </div>
-            <div className={Styles.send} onClick={handleSendMessage}>
-              <button>
+          </div>
+          <div className={Styles.right}>
+            <div className={Styles.mainChat}>
+              <div className={Styles.chatHeader}>
                 <img
-                  src="https://www.pngitem.com/pimgs/m/11-118680_icon-png-send-icon-white-transparent-png.png"
-                  alt="menu"
+                  src="https://img.freepik.com/premium-vector/anonymous-user-circle-icon-vector-illustration-flat-style-with-long-shadow_520826-1931.jpg"
+                  alt="user"
                 />
-              </button>
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                  <div>{activeChatUser}</div>
+                  {typing == true && activeChatUser && (
+                    <div className={Styles.typing}>typing...</div>
+                  )}
+                </div>
+              </div>
+              <div className={Styles.chatArea}>
+                {activeChatUser ? (
+                  <div className={Styles.messageContainer}>
+                    {messages.map((msg, index) => (
+                      <div
+                        key={index}
+                        className={`${Styles.message} ${
+                          msg.id === senderId
+                            ? Styles.rightMessage
+                            : Styles.leftMessage
+                        }`}
+                      >
+                        <p>{msg.content}</p>
+                        <div className={Styles.timestampDiv}>
+                          <span className={Styles.timestamp}>
+                            {new Date(msg.timestamp)
+                              .toLocaleTimeString([], {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })
+                              .toLowerCase()}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className={Styles.placeholder}>
+                    Select a chat to start messaging
+                  </div>
+                )}
+              </div>
+              <div className={Styles.top}>
+                <div className={Styles.sendText}>
+                  <input
+                    type="text"
+                    placeholder="Type a message..."
+                    value={message}
+                    onChange={handleInputChange}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        handleSendMessage();
+                      }
+                      handleTyping();
+                    }}
+                  />
+                </div>
+                <div className={Styles.send} onClick={handleSendMessage}>
+                  <button>
+                    <img
+                      src="https://www.pngitem.com/pimgs/m/11-118680_icon-png-send-icon-white-transparent-png.png"
+                      alt="menu"
+                    />
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
+        </>
+      )}
     </div>
   );
 }
